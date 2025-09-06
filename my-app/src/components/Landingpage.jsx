@@ -4,6 +4,7 @@ import gsap from "gsap";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { ArrowUpRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function ProcessSection() {
   useEffect(() => {
@@ -93,10 +94,13 @@ export default function ProcessSection() {
           transition={{ delay: 0.6, duration: 1 }}
         >
           {/* Black Button */}
-          <button className="flex items-center justify-center gap-2 bg-black text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-full font-medium transition-all duration-300 hover:scale-105 hover:bg-gray-900 text-sm sm:text-base">
-            Open App
-            <ArrowUpRight className="w-4 h-4" />
-          </button>
+         <Link
+  to="/meeting"
+  className="flex items-center justify-center gap-2 bg-black text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-full font-medium transition-all duration-300 hover:scale-105 hover:bg-gray-900 text-sm sm:text-base"
+>
+  Open App
+  <ArrowUpRight className="w-4 h-4" />
+</Link>
 
           {/* White Button */}
           <button className="bg-white text-black px-5 sm:px-6 py-2.5 sm:py-3 rounded-full font-medium transition-all duration-300 hover:scale-105 hover:bg-gray-100 shadow text-sm sm:text-base">

@@ -74,7 +74,7 @@ export default function WellnessSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full bg-gradient-to-b from-[#0a0f2c] via-blue-50/10 to-white px-4 sm:px-6 lg:px-12 py-12 sm:py-20 overflow-hidden"
+      className="relative w-full bg-white px-4 sm:px-6 lg:px-12 py-12 sm:py-20 overflow-hidden"
     >
       {/* Glow background */}
       <div className="absolute top-20 -left-32 w-[250px] sm:w-[350px] md:w-[400px] h-[250px] sm:h-[350px] md:h-[400px] bg-blue-200 rounded-full blur-2xl sm:blur-3xl opacity-40 animate-pulse"></div>
