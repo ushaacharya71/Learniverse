@@ -1,26 +1,55 @@
 import React, { useState } from "react";
+import API from "../api"; // axios instance
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 
 export default function MeetingPage() {
   const [formData, setFormData] = useState({
-    fullName: "",
+    first_name: "",
+    last_name: "",
     email: "",
-    password: "",
+    contact_number: "",
+    gender: "",
+    school_college: "",
+    course_interested: "",
+    message: "",
   });
+
+  const [success, setSuccess] = useState(null); // null = no state, true = success, false = error
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Submitted:", formData);
+
+    try {
+      const res = await API.post("students/", formData); // send to backend
+      console.log("Saved:", res.data);
+
+      setSuccess(true);
+
+      // reset form after success
+      setFormData({
+        first_name: "",
+        last_name: "",
+        email: "",
+        contact_number: "",
+        gender: "",
+        school_college: "",
+        course_interested: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setSuccess(false);
+    }
   };
 
   return (
     <div className="w-full font-sans">
-      {/* ✅ Fullscreen Background Video */}
+      {/* Background Video */}
       <div className="relative h-screen w-full">
         <video
           autoPlay
@@ -31,42 +60,49 @@ export default function MeetingPage() {
         >
           <source src="video.mp4" type="video/mp4" />
         </video>
-        {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/40" />
       </div>
 
-      {/* ✅ Signup Form Section BELOW video */}
+      {/* Form Section */}
       <section className="flex justify-center items-center py-16 px-4 sm:px-6 bg-gray-100">
         <div className="w-full max-w-2xl bg-white shadow-xl rounded-2xl p-8 sm:p-10 text-gray-900">
           <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center">
-            Create Account
+            Connect with Us
           </h2>
 
-          {/* Social Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-6">
-            <button className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg px-4 py-2 w-full hover:bg-gray-100 transition">
-              <FcGoogle size={22} />
-              <span>Sign up with Google</span>
-            </button>
-            <button className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg px-4 py-2 w-full hover:bg-gray-100 transition">
-              <FaFacebook size={22} className="text-blue-500" />
-              <span>Sign up with Facebook</span>
-            </button>
-          </div>
+          {/* Success / Error Messages */}
+          {success === true && (
+            <p className="text-green-600 text-center mb-4">
+              ✅ Form submitted successfully!
+            </p>
+          )}
+          {success === false && (
+            <p className="text-red-600 text-center mb-4">
+              ❌ Something went wrong. Please try again.
+            </p>
+          )}
 
-          <div className="text-center text-gray-500 mb-4">- OR -</div>
-
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
               type="text"
-              name="fullName"
-              placeholder="Full Name"
-              value={formData.fullName}
+              name="first_name"
+              placeholder="First Name"
+              value={formData.first_name}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-400 outline-none"
               required
             />
+
+            <input
+              type="text"
+              name="last_name"
+              placeholder="Last Name"
+              value={formData.last_name}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-400 outline-none"
+              required
+            />
+
             <input
               type="email"
               name="email"
@@ -76,29 +112,66 @@ export default function MeetingPage() {
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-400 outline-none"
               required
             />
+
             <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formData.password}
+              type="tel"
+              name="contact_number"
+              placeholder="Contact Number"
+              value={formData.contact_number}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-400 outline-none"
               required
             />
+
+            <select
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-400 outline-none"
+              required
+            >
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+
+            <input
+              type="text"
+              name="school_college"
+              placeholder="School / College"
+              value={formData.school_college}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-400 outline-none"
+              required
+            />
+
+            <input
+              type="text"
+              name="course_interested"
+              placeholder="Course Interested"
+              value={formData.course_interested}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-400 outline-none"
+              required
+            />
+
+            <textarea
+              name="message"
+              placeholder="Your Message"
+              value={formData.message}
+              onChange={handleChange}
+              rows="4"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-400 outline-none"
+            />
+
             <button
               type="submit"
               className="w-full bg-teal-500 text-white font-semibold py-2 rounded-lg hover:bg-teal-600 transition"
             >
-              Create Account
+              Submit
             </button>
           </form>
-
-          <p className="mt-4 text-gray-600 text-center">
-            Already have an account?{" "}
-            <a href="/login" className="text-teal-600 hover:underline">
-              Log in
-            </a>
-          </p>
         </div>
       </section>
     </div>
