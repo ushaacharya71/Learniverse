@@ -1,10 +1,10 @@
-import {  AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { FiMenu, FiX } from "react-icons/fi";
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const navLinks = [
-   { name: "Home", id: "home", type: "scroll" },
+  { name: "Home", id: "home", type: "scroll" },
   { name: "About", id: "about", type: "scroll" },
   { name: "Programs", id: "programs", type: "scroll" },
   { name: "Projects", id: "projects", type: "scroll" },
@@ -14,33 +14,31 @@ const navLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("home");
-  const lastScrollY = useRef(window.scrollY);
-
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Scroll spy
+  // Scroll spy for homepage only
   useEffect(() => {
+    if (location.pathname !== "/") return;
+
     const handleScroll = () => {
       const sectionOffsets = navLinks
         .filter((l) => l.type === "scroll")
         .map((link) => {
           const section = document.getElementById(link.id);
-          return section
-            ? { id: link.id, offset: section.getBoundingClientRect().top }
-            : null;
+          return section ? { id: link.id, offset: section.getBoundingClientRect().top } : null;
         });
 
-      const visible = sectionOffsets.filter(
-        (s) => s && s.offset < window.innerHeight / 2
-      );
+      const visible = sectionOffsets.filter((s) => s && s.offset < window.innerHeight / 2);
       if (visible.length > 0) {
         setActiveLink(visible[visible.length - 1].id);
       }
     };
+
     window.addEventListener("scroll", handleScroll);
+    handleScroll(); // set initial active link
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [location.pathname]);
 
   const scrollToSection = (id) => {
     const section = document.getElementById(id);
@@ -62,6 +60,16 @@ export default function Navbar() {
 
     setIsOpen(false);
   };
+
+  // Scroll to section if coming from another page
+  useEffect(() => {
+    if (location.state?.scrollTo) {
+      const section = document.getElementById(location.state.scrollTo);
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }, [location.state]);
 
   return (
     <div className="fixed top-4 z-[1000] w-full px-4 md:left-1/2 md:-translate-x-1/2 md:max-w-6xl">
@@ -92,10 +100,7 @@ export default function Navbar() {
         </ul>
 
         {/* Mobile toggle */}
-        <button
-          className="md:hidden text-white ml-4"
-          onClick={() => setIsOpen(!isOpen)}
-        >
+        <button className="md:hidden text-white ml-4" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <FiX size={24} /> : <FiMenu size={24} />}
         </button>
       </nav>
@@ -114,7 +119,9 @@ export default function Navbar() {
                 <li key={link.id}>
                   <button
                     onClick={() => handleNavClick(link)}
-                    className="text-white text-sm font-medium hover:text-[#8bca1e]"
+                    className={`text-white text-sm font-medium hover:text-[#8bca1e] ${
+                      activeLink === link.id ? "text-[#8bca1e]" : ""
+                    }`}
                   >
                     {link.name}
                   </button>

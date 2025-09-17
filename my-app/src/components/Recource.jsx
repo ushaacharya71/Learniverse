@@ -7,7 +7,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const articles = [
   {
-    title: "Membangun Kebiasaan Menabung: Tips dan Trik yang Efektif",
+    title: "Membangun Kebiasaan Menabung: Tips Dan Trik yang Efektif",
     description:
       "Cara sederhana namun ampuh untuk mulai menabung dan mencapai tujuan finansial Anda.",
     author: "Konselor",

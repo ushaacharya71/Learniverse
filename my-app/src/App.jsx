@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
+import axios from "axios";
 
 import "aos/dist/aos.css";
 
@@ -26,16 +27,24 @@ function ScrollToTop() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    if (pathname === "/") {
-      window.scrollTo(0, 0);
-    }
+    window.scrollTo(0, 0);
   }, [pathname]);
 
   return null;
 }
 
-// ✅ Homepage with sections for smooth scroll
+// ✅ Homepage with sections for smooth scroll + API call example
 function HomePage() {
+  const [students, setStudents] = useState([]);
+
+  useEffect(() => {
+    // Fetch students from Django backend
+    axios
+      .get("http://127.0.0.1:8000/api/students/", { withCredentials: true }) // only if using cookies/auth
+      .then(res => setStudents(res.data))
+      .catch(err => console.error("API Error:", err));
+  }, []);
+
   return (
     <>
       <section id="home">
@@ -61,6 +70,22 @@ function HomePage() {
       </section>
       <section id="reviews">
         <Reviews />
+      </section>
+
+      {/* ✅ Display fetched students */}
+      <section id="students" className="p-8 bg-gray-100">
+        <h2 className="text-2xl font-bold mb-4">Students</h2>
+        {students.length > 0 ? (
+          <ul className="space-y-2">
+            {students.map(student => (
+              <li key={student.id}>
+                {student.first_name} {student.last_name} — {student.email}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No students found.</p>
+        )}
       </section>
     </>
   );
